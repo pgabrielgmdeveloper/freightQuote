@@ -112,18 +112,16 @@ func TestGetQuoteMetrics_Success(t *testing.T) {
 	qs := NewQuoteService(nil, mockMetrics)
 
 	expectedMetrics := []Metrics{
-		{Carrier: "Correios", AvgPrice: 5.90, IsCheapest: true, IsMostExpensive: true, TotalOffers: 5.90},
-		{Carrier: "Correios", AvgPrice: 5.90, IsCheapest: false, IsMostExpensive: false, TotalOffers: 5.90},
-		{Carrier: "Correios", AvgPrice: 5.90, IsCheapest: false, IsMostExpensive: false, TotalOffers: 5.90},
-	}
+		{Carrier: CarrierMetrics{Name: "Correios", AvgPrice: 50.99, MaxPrice: 50.99, MinPrice: 50.99}, GeneralAvgPrice: 50.99, GeneralMaxPrice: 50.99, GeneralMinPrice: 50.99}}
+
 	mockMetrics.On("Execute", 3).Return(expectedMetrics, nil)
 
 	metrics, err := qs.GetQuoteMetrics(3)
 
 	assert.NoError(t, err)
-	assert.Equal(t, 3, len(metrics))
-	assert.Equal(t, "Correios", metrics[0].Carrier)
-	assert.Equal(t, 5.90, metrics[0].AvgPrice)
+	assert.Equal(t, 1, len(metrics))
+	assert.Equal(t, "Correios", metrics[0].Carrier.Name)
+	assert.Equal(t, 50.99, metrics[0].GeneralAvgPrice)
 	mockMetrics.AssertExpectations(t)
 }
 

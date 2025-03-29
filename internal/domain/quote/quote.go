@@ -153,10 +153,17 @@ type Offer struct {
 	DeliveryTime int
 }
 
+type CarrierMetrics struct {
+	Name       string
+	AvgPrice   float64
+	MaxPrice   float64
+	MinPrice   float64
+	TotalPrice float64
+}
+
 type Metrics struct {
-	Carrier         string
-	TotalOffers     float64
-	AvgPrice        float64
-	IsCheapest      bool
-	IsMostExpensive bool
+	Carrier         CarrierMetrics
+	GeneralAvgPrice float64
+	GeneralMinPrice float64
+	GeneralMaxPrice float64
 }
