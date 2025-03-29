@@ -18,6 +18,7 @@ func (qs *QuoteService) SimulateQuote(quote QuoteRequest) ([]Offer, error) {
 		return nil, err
 	}
 	return qs.SmltPort.Execute(quote)
+
 }
 
 func (qs *QuoteService) GetQuoteMetrics(lastQuotes int) ([]Metrics, error) {

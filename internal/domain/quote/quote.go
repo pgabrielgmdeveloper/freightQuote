@@ -155,7 +155,7 @@ type Offer struct {
 
 type Metrics struct {
 	Carrier         string
-	TotalOffers     int
+	TotalOffers     float64
 	AvgPrice        float64
 	IsCheapest      bool
 	IsMostExpensive bool
