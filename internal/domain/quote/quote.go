@@ -2,6 +2,7 @@ package quote
 
 import (
 	"errors"
+	"fmt"
 	"regexp"
 )
 
@@ -139,10 +140,10 @@ func isValidCPF(cpf string) bool {
 }
 
 func isValidCEP(cep int) bool {
-	//cepStr := fmt.Sprintf("%d", cep)
+	cepStr := fmt.Sprintf("%d", cep)
 
-	//matched, _ := regexp.MatchString(`^\d{8}$`, cepStr)
-	return true
+	matched, _ := regexp.MatchString(`^\d{7,8}$`, cepStr)
+	return matched
 }
 
 type Offer struct {
