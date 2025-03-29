@@ -1,0 +1,17 @@
+# Arquivos binários
+*.exe
+*.dll
+*.o
+*.a
+*.so
+*.dylib
+*.out
+/bin/
+.idea/
+.vscode/
+*.log
+coverage.out
+
+
+
+
