@@ -147,8 +147,16 @@ func isValidCEP(cep int) bool {
 }
 
 type Offer struct {
-	Carrier    string
-	Deadline   int
-	Service    string
-	FinalPrice float64
+	FinalPrice   float64
+	Carrier      string
+	Service      string
+	DeliveryTime int
+}
+
+type Metrics struct {
+	Carrier         string
+	TotalOffers     int
+	AvgPrice        float64
+	IsCheapest      bool
+	IsMostExpensive bool
 }
