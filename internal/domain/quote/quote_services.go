@@ -21,6 +21,6 @@ func (qs *QuoteService) SimulateQuote(quote QuoteRequest) ([]Offer, error) {
 
 }
 
-func (qs *QuoteService) GetQuoteMetrics(lastQuotes int) ([]Metrics, error) {
+func (qs *QuoteService) GetQuoteMetrics(lastQuotes int) (*Metrics, error) {
 	return qs.MetricsPort.Execute(lastQuotes)
 }
