@@ -110,9 +110,9 @@ func TestSimulateQuote_ValidationError(t *testing.T) {
 func TestGetQuoteMetrics_Success(t *testing.T) {
 	mockMetrics := new(MockMetricsPort)
 	qs := NewQuoteService(nil, mockMetrics)
-
+	metricsCarrier := []CarrierMetrics{{Name: "Correios", AvgPrice: 50.99, MaxPrice: 50.99, MinPrice: 50.99, TotalPrice: 50.99 * 3, TotalOffer: 3}}
 	expectedMetrics := []Metrics{
-		{Carrier: CarrierMetrics{Name: "Correios", AvgPrice: 50.99, MaxPrice: 50.99, MinPrice: 50.99}, GeneralAvgPrice: 50.99, GeneralMaxPrice: 50.99, GeneralMinPrice: 50.99}}
+		{Carrier: metricsCarrier, GeneralMaxCarrierName: "Correios", GeneralMinCarrierName: "Correios", GeneralAvgPrice: 50.99, GeneralMaxPrice: 50.99, GeneralMinPrice: 50.99}}
 
 	mockMetrics.On("Execute", 3).Return(expectedMetrics, nil)
 
@@ -120,7 +120,7 @@ func TestGetQuoteMetrics_Success(t *testing.T) {
 
 	assert.NoError(t, err)
 	assert.Equal(t, 1, len(metrics))
-	assert.Equal(t, "Correios", metrics[0].Carrier.Name)
+	assert.Equal(t, "Correios", metrics[0].Carrier[0].Name)
 	assert.Equal(t, 50.99, metrics[0].GeneralAvgPrice)
 	mockMetrics.AssertExpectations(t)
 }

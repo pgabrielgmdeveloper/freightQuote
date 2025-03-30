@@ -159,11 +159,14 @@ type CarrierMetrics struct {
 	MaxPrice   float64
 	MinPrice   float64
 	TotalPrice float64
+	TotalOffer int
 }
 
 type Metrics struct {
-	Carrier         CarrierMetrics
-	GeneralAvgPrice float64
-	GeneralMinPrice float64
-	GeneralMaxPrice float64
+	Carrier               []CarrierMetrics
+	GeneralAvgPrice       float64
+	GeneralMinPrice       float64
+	GeneralMaxPrice       float64
+	GeneralMinCarrierName string
+	GeneralMaxCarrierName string
 }

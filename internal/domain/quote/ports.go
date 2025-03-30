@@ -9,9 +9,9 @@ type SimulateInputPort interface {
 }
 
 type MetricsOutputPort interface {
-	Execute(lastQuotes int) ([]Metrics, error)
+	Execute(lastQuotes int) (*Metrics, error)
 }
 
 type MetricsInputPort interface {
-	GetMetrics(lastQuotes int) ([]Metrics, error)
+	GetMetrics(lastQuotes int) (*Metrics, error)
 }
