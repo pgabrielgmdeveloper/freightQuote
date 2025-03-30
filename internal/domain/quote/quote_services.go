@@ -12,7 +12,7 @@ func NewQuoteService(portSmlt SimulateQuoteOutPutPort, portMetrics MetricsOutput
 	}
 }
 
-func (qs *QuoteService) SimulateQuote(quote QuoteRequest) ([]Offer, error) {
+func (qs *QuoteService) Simulate(quote QuoteRequest) ([]Offer, error) {
 
 	if err := quote.Validate(); err != nil {
 		return nil, err
@@ -21,6 +21,6 @@ func (qs *QuoteService) SimulateQuote(quote QuoteRequest) ([]Offer, error) {
 
 }
 
-func (qs *QuoteService) GetQuoteMetrics(lastQuotes int) (*Metrics, error) {
+func (qs *QuoteService) GetMetrics(lastQuotes int) (*Metrics, error) {
 	return qs.MetricsPort.Execute(lastQuotes)
 }
