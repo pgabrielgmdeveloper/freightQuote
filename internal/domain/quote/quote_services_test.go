@@ -20,9 +20,9 @@ type MockMetricsPort struct {
 	mock.Mock
 }
 
-func (m *MockMetricsPort) Execute(lastQuotes int) ([]Metrics, error) {
+func (m *MockMetricsPort) Execute(lastQuotes int) (*Metrics, error) {
 	args := m.Called(lastQuotes)
-	return args.Get(0).([]Metrics), args.Error(1)
+	return args.Get(0).(*Metrics), args.Error(1)
 }
 
 func ValidRequest() QuoteRequest {
@@ -87,7 +87,7 @@ func TestSimulateQuote_Success(t *testing.T) {
 		{Carrier: "Correios", FinalPrice: 50.99, DeliveryTime: 1, Service: "SEDEX"},
 	}, nil)
 
-	offers, err := qs.SimulateQuote(validReq)
+	offers, err := qs.Simulate(validReq)
 
 	assert.NoError(t, err)
 	assert.Equal(t, 1, len(offers))
@@ -101,7 +101,7 @@ func TestSimulateQuote_ValidationError(t *testing.T) {
 
 	invalidReq := InvalidRequest()
 
-	_, err := qs.SimulateQuote(invalidReq)
+	_, err := qs.Simulate(invalidReq)
 
 	assert.Error(t, err)
 	assert.Contains(t, err.Error(), "CNPJ do remetente inválido")
@@ -111,17 +111,17 @@ func TestGetQuoteMetrics_Success(t *testing.T) {
 	mockMetrics := new(MockMetricsPort)
 	qs := NewQuoteService(nil, mockMetrics)
 	metricsCarrier := []CarrierMetrics{{Name: "Correios", AvgPrice: 50.99, MaxPrice: 50.99, MinPrice: 50.99, TotalPrice: 50.99 * 3, TotalOffer: 3}}
-	expectedMetrics := []Metrics{
-		{Carrier: metricsCarrier, GeneralMaxCarrierName: "Correios", GeneralMinCarrierName: "Correios", GeneralAvgPrice: 50.99, GeneralMaxPrice: 50.99, GeneralMinPrice: 50.99}}
+	expectedMetrics := &Metrics{
+		Carrier: metricsCarrier, GeneralMaxCarrierName: "Correios", GeneralMinCarrierName: "Correios", GeneralAvgPrice: 50.99, GeneralMaxPrice: 50.99, GeneralMinPrice: 50.99}
 
 	mockMetrics.On("Execute", 3).Return(expectedMetrics, nil)
 
-	metrics, err := qs.GetQuoteMetrics(3)
+	metrics, err := qs.GetMetrics(3)
 
 	assert.NoError(t, err)
-	assert.Equal(t, 1, len(metrics))
-	assert.Equal(t, "Correios", metrics[0].Carrier[0].Name)
-	assert.Equal(t, 50.99, metrics[0].GeneralAvgPrice)
+	assert.Equal(t, 1, len(metrics.Carrier))
+	assert.Equal(t, "Correios", metrics.Carrier[0].Name)
+	assert.Equal(t, 50.99, metrics.GeneralAvgPrice)
 	mockMetrics.AssertExpectations(t)
 }
 
@@ -129,9 +129,9 @@ func TestGetQuoteMetrics_Error(t *testing.T) {
 	mockMetrics := new(MockMetricsPort)
 	qs := NewQuoteService(nil, mockMetrics)
 
-	mockMetrics.On("Execute", 5).Return([]Metrics{}, errors.New("falha no banco"))
+	mockMetrics.On("Execute", 5).Return(&Metrics{}, errors.New("falha no banco"))
 
-	_, err := qs.GetQuoteMetrics(5)
+	_, err := qs.GetMetrics(5)
 
 	assert.Error(t, err)
 	assert.Contains(t, err.Error(), "falha no banco")
