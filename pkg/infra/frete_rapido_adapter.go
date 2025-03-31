@@ -13,10 +13,10 @@ import (
 
 type FreteRapidoAdapter struct {
 	client *http.Client
-	repo   *database.QuoteRepository
+	repo   database.IQuoteRepository
 }
 
-func NewFreteRapidoAdapter(repo *database.QuoteRepository) *FreteRapidoAdapter {
+func NewFreteRapidoAdapter(repo database.IQuoteRepository) *FreteRapidoAdapter {
 	return &FreteRapidoAdapter{
 		client: &http.Client{},
 		repo:   repo,

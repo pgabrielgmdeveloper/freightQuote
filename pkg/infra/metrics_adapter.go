@@ -6,10 +6,10 @@ import (
 )
 
 type MetricsAdapter struct {
-	repo *database.QuoteRepository
+	repo database.IQuoteRepository
 }
 
-func NewMetricsAdapter(repo *database.QuoteRepository) *MetricsAdapter {
+func NewMetricsAdapter(repo database.IQuoteRepository) *MetricsAdapter {
 	return &MetricsAdapter{
 		repo: repo,
 	}
