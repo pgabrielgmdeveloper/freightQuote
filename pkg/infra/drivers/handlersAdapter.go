@@ -95,7 +95,7 @@ func (q *QuoteAdapterHandler) GetMetrics(c *gin.Context) {
 		JSONErrorResponse(http.StatusInternalServerError, "Error ao gerar metricas", err, c)
 		return
 	}
-	c.JSON(http.StatusOK, metrics)
+	c.JSON(http.StatusOK, DomainMetricsToRequest(*metrics))
 }
 
 func JSONErrorResponse(statusCode int, ErrorMessage string, error error, c *gin.Context) {
