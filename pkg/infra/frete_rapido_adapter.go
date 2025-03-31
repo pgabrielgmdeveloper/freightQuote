@@ -5,6 +5,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"github.com/pgabrielgmdeveloper/freightQuote/pkg/infra/database"
+	"io"
 	"net/http"
 
 	"github.com/pgabrielgmdeveloper/freightQuote/internal/domain/quote"
@@ -28,12 +29,14 @@ func (fra *FreteRapidoAdapter) Execute(quoteData quote.QuoteRequest) ([]quote.Of
 	if err != nil {
 		return nil, err
 	}
+
 	response, err := fra.client.Post("https://sp.freterapido.com/api/v3/quote/simulate", "application/json", bytes.NewBuffer(requestPayload))
 	if err != nil {
 		return nil, err
 	}
 	if response.StatusCode != http.StatusOK {
-		return nil, fmt.Errorf("frete Rapido Contract returned %s", response.Status)
+		body, _ := io.ReadAll(response.Body)
+		return nil, fmt.Errorf("frete Rapido Contract returned %s", string(body))
 	}
 	defer response.Body.Close()
 
