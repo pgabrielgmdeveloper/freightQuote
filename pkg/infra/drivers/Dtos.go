@@ -1,6 +1,7 @@
 package drivers
 
 import (
+	"fmt"
 	"github.com/pgabrielgmdeveloper/freightQuote/configs"
 	"github.com/pgabrielgmdeveloper/freightQuote/internal/domain/quote"
 	"strconv"
@@ -42,12 +43,21 @@ type SimulateQuoteResponse struct {
 	Carrier []Carrier `json:"carrier"`
 }
 
+func ConverterStrinToInZipcode(zipcode string) (int, error) {
+	zipcodeResponse, err := strconv.Atoi(strings.TrimLeft(zipcode, "0"))
+	if err != nil {
+		return 0, fmt.Errorf("zipcode deve ser um valor apenas numerico e sem pontos mas foi enviado %s", zipcode)
+	}
+	return zipcodeResponse, nil
+}
+
 func RequestToDomainQuote(request SimulateQuoteRequest) (*quote.QuoteRequest, error) {
 	cfg, err := configs.LoadConfig()
 	if err != nil {
 		return nil, err
 	}
-	zipcode, err := strconv.Atoi(strings.TrimLeft(request.Recipient.Address.Zipcode, "0"))
+
+	zipcode, err := ConverterStrinToInZipcode(request.Recipient.Address.Zipcode)
 	if err != nil {
 		return nil, err
 	}

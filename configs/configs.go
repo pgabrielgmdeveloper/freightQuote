@@ -12,6 +12,8 @@ type conf struct {
 	TokenAPI         string `mapstructure:"TOKEN_API"`
 	PlatformCode     string `mapstructure:"PLATFORM_CODE"`
 	RegisteredNumber string `mapstructure:"REGISTERED_NUMBER"`
+	RedisHost        string `mapstructure:"REDIS_HOST"`
+	RedisPort        string `mapstructure:"REDIS_PORT"`
 }
 
 func LoadConfig() (*conf, error) {
@@ -26,6 +28,8 @@ func LoadConfig() (*conf, error) {
 	viper.BindEnv("TOKEN_API")
 	viper.BindEnv("PLATFORM_CODE")
 	viper.BindEnv("REGISTERED_NUMBER")
+	viper.BindEnv("REDIS_HOST")
+	viper.BindEnv("REDIS_PORT")
 	err := viper.Unmarshal(&cfg)
 	if err != nil {
 		panic(err)
