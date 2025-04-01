@@ -1,0 +1,55 @@
+version: '3.8'
+
+services:
+  # Sua aplicação Go
+  app:
+    build:
+      context: .  # Assume que o Dockerfile está na raiz do projeto
+      dockerfile: Dockerfile
+    container_name: frete-rapido-app
+    environment:
+      - DB_URL=postgres://go_user:go_password@frete-rapido-db:5432/go_db?sslmode=disable
+      - REDIS_URL=redis://redis:6379
+      - DB_DRIVER=postgres
+      - DB_HOST=frete-rapido-database
+      - DB_NAME=frete
+      - DB_PASSWORD=frete
+      - DB_PORT=5432
+      - DB_USER=frete
+      - PLATFORM_CODE=5AKVkHqCn
+      - REDIS_HOST=redis-frete
+      - REDIS_PORT=6379
+      - REGISTERED_NUMBER=25438296000158
+      - TOKEN_API=1d52a9b6b78cf07b08586152459a5c90
+    ports:
+      - "8000:8000"
+    depends_on:
+      - postgres
+      - redis
+
+  postgres:
+    image: postgres:15-alpine
+    container_name: frete-rapido-database
+    environment:
+      - POSTGRES_USER=frete
+      - POSTGRES_PASSWORD=frete
+      - POSTGRES_DB=frete
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    ports:
+      - "5432:5432"
+
+
+  # Redis
+  redis:
+    image: redis:7-alpine
+    container_name: redis-frete
+    volumes:
+      - redis_data:/data
+    ports:
+      - "6379:6379"
+
+
+volumes:
+  postgres_data:
+  redis_data:
