@@ -37,9 +37,9 @@ func (q *QuoteRepository) GetMetricsQuotes(lastQuotes int) (*quote.Metrics, erro
 			round(avg(final_price),2) as avg_price,
 			round(min(final_price),2) as min_price,
 			round(max(final_price),2) as max_price,
-			(select min(final_price) from %s) as min_general_price,
-			(select max(final_price) from %s) as max_general_price,
-			(select avg(final_price) from %s) as avg_general_price,
+			round((select min(final_price) from %s)) as min_general_price,
+			round((select max(final_price) from %s)) as max_general_price,
+			round((select avg(final_price) from %s)) as avg_general_price,
     		(select carrier from %s where final_price = (select min(final_price) from %s) limit 1) AS carrier_min_general_price,
     		(select carrier from %s where final_price = (select max(final_price) from %s) limit 1) AS carrier_max_general_price
 		from %s group by carrier`, from, from, from, from, from, from, from, from))
