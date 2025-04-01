@@ -1,4 +1,4 @@
-package drivers
+package http
 
 import (
 	"context"

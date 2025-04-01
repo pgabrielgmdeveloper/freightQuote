@@ -1,4 +1,4 @@
-package drivers
+package http
 
 import (
 	"fmt"
@@ -12,11 +12,11 @@ type Address struct {
 	Zipcode string `json:"zipcode" binding:"required"`
 }
 
-type Recipient struct {
+type RecipientRequest struct {
 	Address Address `json:"address"`
 }
 
-type Volume struct {
+type VolumeRequest struct {
 	Category      int     `json:"category" binding:"required"`
 	Amount        int     `json:"amount" binding:"required, gt=0"`
 	UnitaryWeight float64 `json:"unitary_weight" binding:"required, gt=0"`
@@ -28,8 +28,8 @@ type Volume struct {
 }
 
 type SimulateQuoteRequest struct {
-	Recipient Recipient `json:"recipient" binding:"required"`
-	Volumes   []Volume  `json:"volumes" binding:"required"`
+	Recipient RecipientRequest `json:"recipient" binding:"required"`
+	Volumes   []VolumeRequest  `json:"volumes" binding:"required"`
 }
 
 type Carrier struct {
@@ -41,50 +41,6 @@ type Carrier struct {
 
 type SimulateQuoteResponse struct {
 	Carrier []Carrier `json:"carrier"`
-}
-
-type CarrierMetricsResponse struct {
-	Name       string
-	AvgPrice   float64
-	MaxPrice   float64
-	MinPrice   float64
-	TotalPrice float64
-	TotalOffer int
-}
-
-type MetricsResponse struct {
-	Carrier               []CarrierMetricsResponse
-	GeneralAvgPrice       float64
-	GeneralMinPrice       float64
-	GeneralMaxPrice       float64
-	GeneralMinCarrierName string
-	GeneralMaxCarrierName string
-}
-
-func DomainMetricsToRequest(metrics quote.Metrics) MetricsResponse {
-	return MetricsResponse{
-		Carrier: func() []CarrierMetricsResponse {
-			var carrierMetris []CarrierMetricsResponse
-			for _, m := range metrics.Carrier {
-				metricDomain := CarrierMetricsResponse{
-					Name:       m.Name,
-					AvgPrice:   m.AvgPrice,
-					MaxPrice:   m.MaxPrice,
-					MinPrice:   m.MinPrice,
-					TotalPrice: m.TotalPrice,
-					TotalOffer: m.TotalOffer,
-				}
-				carrierMetris = append(carrierMetris, metricDomain)
-
-			}
-			return carrierMetris
-		}(),
-		GeneralMinCarrierName: metrics.GeneralMinCarrierName,
-		GeneralMaxCarrierName: metrics.GeneralMaxCarrierName,
-		GeneralMinPrice:       metrics.GeneralMinPrice,
-		GeneralMaxPrice:       metrics.GeneralMaxPrice,
-		GeneralAvgPrice:       metrics.GeneralAvgPrice,
-	}
 }
 
 func ConverterStrinToInZipcode(zipcode string) (int, error) {

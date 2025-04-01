@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"github.com/jarcoal/httpmock"
 	"github.com/pgabrielgmdeveloper/freightQuote/internal/domain/quote"
+	http2 "github.com/pgabrielgmdeveloper/freightQuote/pkg/infra/http"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/mock"
 	"net/http"
@@ -27,7 +28,7 @@ func (m *MockRepo) SaveAllOffers(offers []quote.Offer) error {
 }
 
 func ResponseMockFreteRapidoApi(request *http.Request) (*http.Response, error) {
-	var payload FreteRapidoRequest
+	var payload http2.FreteRapidoApiRequest
 	if err := json.NewDecoder(request.Body).Decode(&payload); err != nil {
 		return httpmock.NewStringResponse(400, "invalid request"), nil
 	}
@@ -42,17 +43,17 @@ func ResponseMockFreteRapidoApi(request *http.Request) (*http.Response, error) {
 		return httpmock.NewBytesResponse(400, responseBody), nil
 	}
 
-	simpleResponse := FreteRapidoResponse{
-		Dispatchers: []DispatcherResponse{
+	simpleResponse := http2.FreteRapidoApiResponse{
+		Dispatchers: []http2.DispatcherResponse{
 			{
-				Offer: []OfferResponse{
+				Offer: []http2.OfferResponse{
 					{
 						FinalPrice: 30,
-						Carrier: CarrierResponse{
+						Carrier: http2.CarrierResponse{
 							Name: "CORREIO - SEDEX",
 						},
 						Service: "SEDEX",
-						DeliveryTime: DeliveryTimeResponse{
+						DeliveryTime: http2.DeliveryTimeResponse{
 							Days:    1,
 							Hours:   0,
 							Minutes: 0,

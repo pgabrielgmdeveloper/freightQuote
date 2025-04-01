@@ -1,15 +1,15 @@
-package infra
+package http
 
 import "github.com/pgabrielgmdeveloper/freightQuote/internal/domain/quote"
 
-type FreteRapidoRequest struct {
+type FreteRapidoApiRequest struct {
 	Shipper        Shipper      `json:"shipper"`
 	Recipient      Recipient    `json:"recipient"`
 	Dispatchers    []Dispatcher `json:"dispatchers"`
 	SimulationType []int        `json:"simulation_type"`
 }
 
-type FreteRapidoResponse struct {
+type FreteRapidoApiResponse struct {
 	Dispatchers []DispatcherResponse `json:"dispatchers"`
 }
 
@@ -26,9 +26,9 @@ type Recipient struct {
 }
 
 type Dispatcher struct {
-	RegisteredNumber string   `json:"registered_number"`
-	Zipcode          int      `json:"zipcode"`
-	Volumes          []Volume `json:"volumes"`
+	RegisteredNumber string             `json:"registered_number"`
+	Zipcode          int                `json:"zipcode"`
+	Volumes          []VolumeApiRequest `json:"volumes"`
 }
 type DispatcherResponse struct {
 	Offer []OfferResponse `json:"offers"`
@@ -51,7 +51,7 @@ type CarrierResponse struct {
 	Name string `json:"name"`
 }
 
-type Volume struct {
+type VolumeApiRequest struct {
 	Amount        int     `json:"amount"`
 	Category      string  `json:"category"`
 	Height        float64 `json:"height"`
@@ -61,8 +61,8 @@ type Volume struct {
 	UnitaryWeight float64 `json:"unitary_weight"`
 }
 
-func DomainToVolumeContract(volumeDomain quote.Volume) Volume {
-	return Volume{
+func DomainToVolumeContract(volumeDomain quote.Volume) VolumeApiRequest {
+	return VolumeApiRequest{
 		Category:      volumeDomain.Category,
 		Amount:        volumeDomain.Amount,
 		Height:        volumeDomain.Height,
@@ -77,8 +77,8 @@ func DomainToDispacherContract(dispacherDomain quote.Dispatcher) Dispatcher {
 	return Dispatcher{
 		RegisteredNumber: dispacherDomain.RegisteredNumber,
 		Zipcode:          dispacherDomain.Zipcode,
-		Volumes: func() []Volume {
-			var volumes []Volume
+		Volumes: func() []VolumeApiRequest {
+			var volumes []VolumeApiRequest
 			for _, volume := range dispacherDomain.Volumes {
 				volumes = append(volumes, DomainToVolumeContract(volume))
 			}
@@ -87,8 +87,8 @@ func DomainToDispacherContract(dispacherDomain quote.Dispatcher) Dispatcher {
 	}
 }
 
-func DomainToFreteRapidoContractRequest(request quote.QuoteRequest) FreteRapidoRequest {
-	return FreteRapidoRequest{
+func DomainToFreteRapidoContractRequest(request quote.QuoteRequest) FreteRapidoApiRequest {
+	return FreteRapidoApiRequest{
 		Shipper: Shipper{
 			RegisteredNumber: request.Shipper.RegisteredNumber,
 			Token:            request.Shipper.Token,
@@ -111,7 +111,7 @@ func DomainToFreteRapidoContractRequest(request quote.QuoteRequest) FreteRapidoR
 	}
 }
 
-func FreteApiResponseToDomainOffer(response FreteRapidoResponse) []quote.Offer {
+func FreteApiResponseToDomainOffer(response FreteRapidoApiResponse) []quote.Offer {
 	var offers []quote.Offer
 	for _, d := range response.Dispatchers {
 		for _, offer := range d.Offer {

@@ -5,6 +5,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"github.com/pgabrielgmdeveloper/freightQuote/pkg/infra/database"
+	http2 "github.com/pgabrielgmdeveloper/freightQuote/pkg/infra/http"
 	"io"
 	"net/http"
 
@@ -24,7 +25,7 @@ func NewFreteRapidoAdapter(repo database.IQuoteRepository) *FreteRapidoAdapter {
 }
 
 func (fra *FreteRapidoAdapter) Execute(quoteData quote.QuoteRequest) ([]quote.Offer, error) {
-	freteApiRequest := DomainToFreteRapidoContractRequest(quoteData)
+	freteApiRequest := http2.DomainToFreteRapidoContractRequest(quoteData)
 	requestPayload, err := json.Marshal(freteApiRequest)
 	if err != nil {
 		return nil, err
@@ -40,11 +41,11 @@ func (fra *FreteRapidoAdapter) Execute(quoteData quote.QuoteRequest) ([]quote.Of
 	}
 	defer response.Body.Close()
 
-	var freteApiResponse FreteRapidoResponse
+	var freteApiResponse http2.FreteRapidoApiResponse
 	if err := json.NewDecoder(response.Body).Decode(&freteApiResponse); err != nil {
 		return nil, err
 	}
-	offers := FreteApiResponseToDomainOffer(freteApiResponse)
+	offers := http2.FreteApiResponseToDomainOffer(freteApiResponse)
 	if err = fra.repo.SaveAllOffers(offers); err != nil {
 		return nil, err
 	}

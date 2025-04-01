@@ -7,13 +7,12 @@ import (
 	"github.com/pgabrielgmdeveloper/freightQuote/pkg/infra"
 	"github.com/pgabrielgmdeveloper/freightQuote/pkg/infra/cache"
 	"github.com/pgabrielgmdeveloper/freightQuote/pkg/infra/database"
-	"github.com/pgabrielgmdeveloper/freightQuote/pkg/infra/drivers"
+	"github.com/pgabrielgmdeveloper/freightQuote/pkg/infra/http"
 )
 
 func main() {
 
 	cfg, err := configs.LoadConfig()
-
 	db, err := database.NewDbInstance(
 		cfg.DBDriver,
 		cfg.DBHost,
@@ -34,10 +33,8 @@ func main() {
 	repo := database.NewQuoteRepository(db)
 	adapterMetrics := infra.NewMetricsAdapter(repo)
 	adapterSimulateQuote := infra.NewFreteRapidoAdapter(repo)
-
 	quoteService := quote.NewQuoteService(adapterSimulateQuote, adapterMetrics)
-
-	handlerQuoteServices := drivers.NewQuoteAdapterHandler(quoteService, quoteService, redisCache)
+	handlerQuoteServices := http.NewQuoteAdapterHandler(quoteService, quoteService, redisCache)
 
 	r := gin.Default()
 	r.POST("/simulate", handlerQuoteServices.SimulateQuote)
