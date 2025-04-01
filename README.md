@@ -16,6 +16,9 @@ Com isso o sistema já está pronto para o uso, para testar existe algumas forma
 
 2. `endpoints criados`;
    - temos 2 end points o primeiro simulate
+     - que tem a função de simular uma cotação de frete
+   - o segundo metrics
+     - que tem a função gera metricas com base nas cotações/ofertas geradas no endpoint de simulate
 
 ## Arquitetura do projeto
 #### o Projeto utilizar da arquitetura hexal ou port and adpaters
